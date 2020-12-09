@@ -1,0 +1,30 @@
+LACKS_PERMISSION_GENERIC=You don't have permissions to use that command.
+LACKS_PERMISSION_EMOJI=You don't have permissions to add an emoji to that command.
+
+LFG_NOT_GM_MESSAGE=The :raised_hand: emoji in the looking for games chat is only for GMs who want to run the session in question. If you'd like to become a GM, contact a Game Team member to take the GM Test.
+LFG_SET_CHANNEL_SUCCESS=Successfully set LFG Channel
+LFG_SET_GM_FAIL_NO_ROLE_MENTIONED=You must mention a role.
+LFG_SET_GM_SUCCESS=Succesfully set GM Role.
+LFG_EMOJI_CLEAR_SUCCESS=Succesfully cleared the LFG GM emojis.
+
+REGISTRY_CHARACTERSEARCHBYNAME_FAIL_NO_CHARACTER_MENTIONED=Format is $registry [Character Name]
+REGISTRY_CHARACTERSEARCHBYNAME_RETURNED_MULTIPLE_SHEETS=Returned Multiple Sheets: 
+REGISTRY_CHARACTERSEARCHBYNAME_RETURNED_MULTIPLE_SHEETS_TOO_MANY=Returned way too many sheets.
+REGISTRY_CHARACTERSEARCHBYNAME_NO_CHARACTER_FOUND=No character found by that name.
+REGISTRY_FAILURE_BACKEND=Something's gone wrong on my end.
+
+SCHEDULE_TIMEZONE_INFO=(Times are in EST)
+
+SCHEDULE_REMINDER_MESSAGE=This is a reminder that you are in the session **%s** in %s.
+SCHEDULE_REMINDER_CLEARED=Reminders Cleared! You will no longer recieve reminders for games you are in.
+SCHEDULE_REMINDER_SHOW=Currently you will recieve %s reminder(s) before a game you are in:%s.
+SCHEDULE_REMINDER_ERROR_NONE=You don't have any reminders set for games you are in.
+SCHEDULE_REMINDER_ERROR_MAX=Sorry! Session reminders are limited to three per person! Use $clearreminder to clear your reminders or $removereminder to remove a specific reminder, which you can see with $showreminder.
+SCHEDULE_REMINDER_ERROR_FUCK_YOU= I'm not doing that.
+
+SCHEDULE_REMINDER_ADD=I've added a reminder for you that will go off %s before a session you are in. (You have %s out of 3 reminders set. Use $showreminder to see them or $clearreminder to clear them.)
+SCHEDULE_REMINDER_ADD_ERROR_INVALID_FORMAT=Invalid format! Correct format is $addreminder [Number] ("Minutes", "Hours", or "Days")
+
+SCHEDULE_REMINDER_REMOVE_ERROR_INVALID_FORMAT=Invalid format! Correct format is $removereminder [Number] ("Minutes", "Hours", or "Days")
+SCHEDULE_REMINDER_REMOVE_SUCCESS=I have removed that reminder for you.
+SCHEDULE_REMINDER_REMOVE_ERROR_DOES_NOT_EXIST=You don't have a reminder set up for that time. You can use $showreminder to see your reminders.
