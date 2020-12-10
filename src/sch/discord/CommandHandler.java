@@ -81,6 +81,16 @@ public class CommandHandler {
 		commands.put(properties.getProperty("SCHEDULING_REMIDNER_REMOVE_COMMAND"), event -> {
 			doSchedulingReminderRemove(event);
 		});
+		
+		commands.put("wiki", event -> {
+			doWikiSearch(event, "wiki", null);
+		});
+		commands.put("villain", event -> {
+			String[] r = {"villain"};
+			doWikiSearch(event, "villain", r);
+		});
+		
+		
 		commands.put("snowflake", event -> {
 			StringBuilder sb = new StringBuilder();
 			sb.append("Server ID: ");
@@ -95,6 +105,19 @@ public class CommandHandler {
 
 
 		LFGHandler.setLFGEmojiCommand = properties.getProperty("LFG_EMOJI_SET_COMMAND");
+	}
+	
+	
+	private static void doWikiSearch(MessageCreateEvent event, String prefix, String[] regrex)
+	{
+		String message = event.getMessage().getContent();
+		message = message.substring(prefix.length()+commandPrefix.length());
+		System.out.println(message);
+		String response = WikiSearcher.searchFor(message, regrex);
+		if (response !=null)
+		{
+			DiscordHandler.reply(event, response);
+		}
 	}
 
 	private static void doClearLFGEmojis(MessageCreateEvent event) {
