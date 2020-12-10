@@ -82,9 +82,11 @@ public class CommandHandler {
 			doSchedulingReminderRemove(event);
 		});
 		
+		//ALPHA
 		commands.put("wiki", event -> {
 			doWikiSearch(event, "wiki", null);
 		});
+		//ALPHA
 		commands.put("villain", event -> {
 			String[] r = {"villain"};
 			doWikiSearch(event, "villain", r);
@@ -117,7 +119,8 @@ public class CommandHandler {
 		if (response !=null)
 		{
 			DiscordHandler.reply(event, response);
-		}
+		} else
+			DiscordHandler.reply(event, "No results found.");
 	}
 
 	private static void doClearLFGEmojis(MessageCreateEvent event) {

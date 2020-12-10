@@ -32,25 +32,15 @@ public class WikiSearcher {
 		Document document;
 		try {
 			document = Jsoup
-			        .connect("http://www.google.com/search?q=site:http://sch.wikidot.com/ " + in)
+			        .connect("http://sch.wikidot.com/search:site/q/" + in)
 			        .userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:5.0) Gecko/20100101 Firefox/5.0")     
 			        .get();
-			 Elements links = document.select("a[href]");
+			 Elements links = document.select("div.search-results").select("a[href]");
+					 // > a[href]");
 			 for (Element link : links) {
-
+				 	
 		            String temp = link.attr("href");
-		            if(temp.startsWith("/url?q=")){
-		            	if (regrex!=null)
-		            	{
-		            		for (int x=0;x<regrex.length;x++)
-		            		{
-		            			if (temp.contains(regrex[x]))
-		            			{
-		            				return getDomainName(temp);
-		            			}
-		            		}
-		            	} else return getDomainName(temp);
-		            }
+		            return temp;
 
 		        }
 		} catch (IOException e) {
