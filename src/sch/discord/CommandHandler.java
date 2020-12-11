@@ -86,11 +86,6 @@ public class CommandHandler {
 		commands.put("wiki", event -> {
 			doWikiSearch(event, "wiki", null);
 		});
-		//ALPHA
-		commands.put("villain", event -> {
-			String[] r = {"villain"};
-			doWikiSearch(event, "villain", r);
-		});
 		
 		
 		commands.put("snowflake", event -> {
@@ -302,7 +297,7 @@ public class CommandHandler {
 		String message = event.getMessage().getContent();
 		String[] words = message.split(" ");
 		if (words.length == 2) {
-			String tz = words[1];
+			String tz = words[1].toUpperCase();
 			if (SchedulingHandler.isValidTimeZone(tz)) {
 				timezone = tz;
 			} else {
