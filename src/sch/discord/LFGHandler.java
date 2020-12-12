@@ -20,7 +20,7 @@ public class LFGHandler {
 	static final long CHANNEL_NULL_VALUE = 3333333;
 
 	static String setLFGEmojiCommand;
-	
+
 	static Set<Integer> lfgEmojis = new HashSet<>();
 	static Snowflake lfgChannel;
 	static Snowflake gmRole;

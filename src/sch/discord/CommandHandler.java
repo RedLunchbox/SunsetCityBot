@@ -19,8 +19,6 @@ import discord4j.common.util.Snowflake;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.entity.Guild;
 import discord4j.core.object.entity.Member;
-import discord4j.core.object.entity.User;
-import discord4j.rest.entity.RestUser;
 import gretchen.Gretchen;
 import reactor.core.publisher.Mono;
 import schbot.SchedulePost;
@@ -83,8 +81,8 @@ public class CommandHandler {
 		});
 		
 		//ALPHA
-		commands.put("wiki", event -> {
-			doWikiSearch(event, "wiki", null);
+		commands.put(properties.getProperty("SEARCH_WIKI_COMMAND"), event -> {
+			doWikiSearch(event, properties.getProperty("SEARCH_WIKI_COMMAND"));
 		});
 		
 		
@@ -105,12 +103,12 @@ public class CommandHandler {
 	}
 	
 	
-	private static void doWikiSearch(MessageCreateEvent event, String prefix, String[] regrex)
+	private static void doWikiSearch(MessageCreateEvent event, String prefix)
 	{
 		String message = event.getMessage().getContent();
 		message = message.substring(prefix.length()+commandPrefix.length());
 		System.out.println(message);
-		String response = WikiSearcher.searchFor(message, regrex);
+		String response = WikiSearcher.searchFor(message);
 		if (response !=null)
 		{
 			DiscordHandler.reply(event, response);

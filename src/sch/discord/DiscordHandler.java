@@ -28,11 +28,11 @@ public class DiscordHandler {
 	static DiscordClient client;
 	static GatewayDiscordClient gateway;
 	public static UIContainer UIContainer;
-	public static final String DISCORD_TOKEN="cfg/discord.token";
-	
-	private static Map<Snowflake,Snowflake> replyMap = new HashMap<>();
+	public static final String DISCORD_TOKEN = "cfg/discord.token";
+
+	private static Map<Snowflake, Snowflake> replyMap = new HashMap<>();
 	private static LinkedList<Snowflake> replyQueue = new LinkedList<>();
-	private static int MAX_REPLYMAP_SIZE=256;
+	private static int MAX_REPLYMAP_SIZE = 256;
 
 	public static final int DISCORD_CHAR_LIMIT = 2000;
 
@@ -66,25 +66,24 @@ public class DiscordHandler {
 		}
 		CommandHandler.executeCommandHandling();
 		AutoPruning.init();
-		
+
 		DiscordHandler.gateway.on(MessageDeleteEvent.class).subscribe(event -> {
-			
-		Snowflake sf = event.getMessageId();
-		if (replyMap.containsKey(sf))
-		{
-			Message m = gateway.getMessageById(event.getChannelId(), replyMap.get(sf)).onErrorResume(err -> Mono.empty()).block();
-			if (m == null) return;
-			m.delete().block();
-			replyMap.remove(sf);
-			replyQueue.remove(sf);
-		}
-		
-		}
-		);
-				System.out.println("Ready");
+
+			Snowflake sf = event.getMessageId();
+			if (replyMap.containsKey(sf)) {
+				Message m = gateway.getMessageById(event.getChannelId(), replyMap.get(sf))
+						.onErrorResume(err -> Mono.empty()).block();
+				if (m == null)
+					return;
+				m.delete().block();
+				replyMap.remove(sf);
+				replyQueue.remove(sf);
+			}
+
+		});
+		System.out.println("Ready");
 		gateway.onDisconnect().block();
 	}
-
 
 	static boolean isAdmin(Member member) {
 		return checkPermissions(member, EnumSet.of(Permission.ADMINISTRATOR));
@@ -115,36 +114,31 @@ public class DiscordHandler {
 					.createMessage("ERROR: Tried sending a message that exceeded discord's character limit").block();
 			return;
 		}
-		
+
 		Message botMessage = event.getMessage().getChannel().block().createMessage(reply).block();
-		addToReplyMap(event.getMessage().getId(),botMessage.getId());
+		addToReplyMap(event.getMessage().getId(), botMessage.getId());
 	}
-	
-	public static  void addToReplyMap(Snowflake message, Snowflake reply)
-	{
+
+	public static void addToReplyMap(Snowflake message, Snowflake reply) {
 		replyMap.put(message, reply);
 		replyQueue.add(message);
-		if (replyQueue.size()>MAX_REPLYMAP_SIZE)
-		{
+		if (replyQueue.size() > MAX_REPLYMAP_SIZE) {
 			replyMap.remove(replyQueue.pop());
 		}
-		
+
 	}
-	
+
 	public static void sendMessage(Snowflake UserID, String reply) {
 		System.out.println("Replying: " + reply);
 		client.getUserById(UserID).getPrivateChannel().block();
 		User user = gateway.getUserById(UserID).onErrorResume(err -> Mono.empty()).block();
-		if (user==null)
-		{
+		if (user == null) {
 			return;
 		}
-		if (user.getPrivateChannel().block().createMessage(reply).onErrorResume(err -> Mono.empty()).block()==null)
-		{
+		if (user.getPrivateChannel().block().createMessage(reply).onErrorResume(err -> Mono.empty()).block() == null) {
 			System.out.println("Message Failed to Send");
 		}
 	}
-
 
 	public static void replyPrivately(Member member, String reply) {
 		System.out.println("Replying: " + reply);
