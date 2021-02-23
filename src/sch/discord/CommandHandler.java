@@ -21,6 +21,8 @@ import discord4j.core.object.entity.Guild;
 import discord4j.core.object.entity.Member;
 import gretchen.Gretchen;
 import reactor.core.publisher.Mono;
+import schbot.CharacterStatus;
+import schbot.DiceRoller;
 import schbot.SchedulePost;
 import schbot.TimeIncrement;
 import schbot.ValidTimeUnits;
@@ -79,13 +81,12 @@ public class CommandHandler {
 		commands.put(properties.getProperty("SCHEDULING_REMIDNER_REMOVE_COMMAND"), event -> {
 			doSchedulingReminderRemove(event);
 		});
-		
-		//ALPHA
+
+		// ALPHA
 		commands.put(properties.getProperty("SEARCH_WIKI_COMMAND"), event -> {
 			doWikiSearch(event, properties.getProperty("SEARCH_WIKI_COMMAND"));
 		});
-		
-		
+
 		commands.put("snowflake", event -> {
 			StringBuilder sb = new StringBuilder();
 			sb.append("Server ID: ");
@@ -95,22 +96,58 @@ public class CommandHandler {
 			DiscordHandler.reply(event, sb.toString());
 		});
 		commands.put("pruneschedule", event -> {
-			DiscordHandler.reply(event, "Next Venting Auto-Prune: "+AutoPruning.getSchedule().getScheduledTime());
+			DiscordHandler.reply(event, "Next Venting Auto-Prune: " + AutoPruning.getSchedule().getScheduledTime());
 		});
 
+		commands.put("roll", event -> {
+			doDiceRoll(event);
+		});
+
+		commands.put("setprimary", event -> {
+			doCharacterChange(event, CharacterStatus.PRIMARY);
+		});
 
 		LFGHandler.setLFGEmojiCommand = properties.getProperty("LFG_EMOJI_SET_COMMAND");
 	}
-	
-	
-	private static void doWikiSearch(MessageCreateEvent event, String prefix)
-	{
+
+	private static void doCharacterChange(MessageCreateEvent event, CharacterStatus status) {
+		System.out.println("Command recognized");
 		String message = event.getMessage().getContent();
-		message = message.substring(prefix.length()+commandPrefix.length());
+		String[] words = message.split(" ");
+		if (words.length < 2) {
+			DiscordHandler.reply(event, Messages.REGISTRY_CHARACTERSEARCHBYNAME_FAIL_NO_CHARACTER_MENTIONED);
+			return;
+		}
+		String characterName = message.substring(words[0].length() + 1);
+		try {
+			List<List<Object>> results = GoogleSheets.getCharactersValues(characterName);
+			if (results.size() != 1) {
+				DiscordHandler.reply(event,
+						"BETA: Multiple or invalid characters returned, can't troubleshoot this yet.");
+				return;
+			}
+			String authorName = GoogleSheets.getPlayerName(results.get(0));
+			DiscordHandler.reply(event, authorName);
+			Member member = event.getMember().get();
+			if (RegistryHandler.isNameLinkedWithSnowflake(authorName)) {
+				System.out.println("Author recognized");
+			} else {
+				System.out.println("Sending request");
+				DiscordHandler.createSnowflakePairRequest(member,status,results.get(0));
+			}
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	private static void doWikiSearch(MessageCreateEvent event, String prefix) {
+		String message = event.getMessage().getContent();
+		message = message.substring(prefix.length() + commandPrefix.length());
 		System.out.println(message);
 		String response = WikiSearcher.searchFor(message);
-		if (response !=null)
-		{
+		if (response != null) {
 			DiscordHandler.reply(event, response);
 		} else
 			DiscordHandler.reply(event, "No results found.");
@@ -373,6 +410,10 @@ public class CommandHandler {
 		for (int x = 0; x < messages.size(); x++) {
 			DiscordHandler.reply(event, messages.get(x));
 		}
+	}
+
+	static void doDiceRoll(MessageCreateEvent event) {
+		DiscordHandler.reply(event, DiceRoller.rollFateDice(4, 0));
 	}
 
 	static void doSearchCharacter(MessageCreateEvent event) {

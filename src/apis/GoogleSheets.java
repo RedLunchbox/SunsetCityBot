@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -41,7 +42,9 @@ public class GoogleSheets {
 
 	public static int CHARACTER_NAME_ROW = 1;
 	public static int CHARACTER_SHEET_LINK_ROW = 2;
-	public static int CHARACTER_PLAYER_ROW=0;
+	public static int CHARACTER_PLAYER_ROW = 0;
+
+	public static final byte RESULT_MAX_LIMIT = 5;
 
 	private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
 		// Load client secrets.
@@ -60,8 +63,36 @@ public class GoogleSheets {
 	public static ValueRange getResponse() throws IOException {
 		return service.spreadsheets().values().get(SpreadSheetID, range).execute();
 	}
-	
 
+	public static List<List<Object>> getCharactersValues(String input) throws IOException {
+		List<List<Object>> results = new ArrayList<>();
+		ValueRange response = getResponse();
+		List<List<Object>> values = response.getValues();
+		String characterSearch = input.toLowerCase();
+		for (List<Object> row : values) {
+			if (row.size() == 0)
+				continue;
+			String result = row.get(CHARACTER_NAME_ROW).toString().toLowerCase();
+			if (row.isEmpty())
+				continue;
+			if (result.equals(characterSearch)) {
+				results = new ArrayList<>();
+				results.add(row);
+				return results;
+			} else if (result.contains(characterSearch)) {
+				results.add(row);
+			}
+			if (results.size() > RESULT_MAX_LIMIT) {
+				break;
+			}
+		}
+		return results;
+	}
+	
+	public static String getPlayerName(List<Object> row)
+	{
+		return row.get(CHARACTER_PLAYER_ROW).toString();
+	}
 
 	public static String searchForCharacter(String character) throws IOException {
 		ValueRange response = getResponse();
@@ -86,7 +117,7 @@ public class GoogleSheets {
 			return returns.get(0);
 		} else if (returns.size() > 1) {
 
-			if (returns.size() <= 5) {
+			if (returns.size() <= RESULT_MAX_LIMIT) {
 				StringBuilder sb = new StringBuilder();
 				sb.append(Messages.REGISTRY_CHARACTERSEARCHBYNAME_RETURNED_MULTIPLE_SHEETS);
 				Iterator<String> i = returnNames.iterator();

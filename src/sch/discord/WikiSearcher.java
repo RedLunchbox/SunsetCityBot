@@ -8,6 +8,8 @@ import org.jsoup.select.Elements;
 
 public class WikiSearcher {
 	
+	public static boolean wikiServiceRunning=true;
+	
 	
 	public static String searchFor(String in)
 	{
@@ -19,7 +21,6 @@ public class WikiSearcher {
 			        .userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:5.0) Gecko/20100101 Firefox/5.0")     
 			        .get();
 			 Elements links = document.select("div.search-results").select("a[href]");
-					 // > a[href]");
 			 for (Element link : links) {
 				 	
 		            String temp = link.attr("href");

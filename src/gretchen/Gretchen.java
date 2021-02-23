@@ -2,15 +2,7 @@ package gretchen;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Properties;
 import java.util.Scanner;
-import java.util.Set;
-
-import discord4j.core.object.entity.Message;
 
 public class Gretchen {
 	

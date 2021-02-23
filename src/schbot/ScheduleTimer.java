@@ -56,7 +56,8 @@ public class ScheduleTimer {
 	{
 		ScheduleTimer t= this;
 		 TimerTask task = new TimerTask() {
-		        public void run() {
+		        @Override
+				public void run() {
 		        	SchedulingHandler.timerOnOff(t);
 		        }
 		    };

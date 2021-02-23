@@ -34,14 +34,14 @@ public class PruneSchedule {
 	public Date getScheduledTime()
 	{
 		Calendar gc = new GregorianCalendar();
-		gc.set(GregorianCalendar.HOUR_OF_DAY, hour);
-		gc.set(GregorianCalendar.MINUTE, 0);
-		gc.set(GregorianCalendar.SECOND, 0);
-		gc.set(GregorianCalendar.MILLISECOND, 0);
+		gc.set(Calendar.HOUR_OF_DAY, hour);
+		gc.set(Calendar.MINUTE, 0);
+		gc.set(Calendar.SECOND, 0);
+		gc.set(Calendar.MILLISECOND, 0);
 		if (gc.compareTo(new GregorianCalendar())<0)
 		{
 			System.out.println("After time, increasing a day");
-			gc.add(GregorianCalendar.DAY_OF_YEAR, 1);
+			gc.add(Calendar.DAY_OF_YEAR, 1);
 		}
 		return gc.getTime();
 	}

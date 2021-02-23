@@ -72,6 +72,9 @@ public class AutoPruning {
 		System.out.println((sList.size()));
 		
 		c.getRestChannel().bulkDelete(Flux.fromIterable(sList)).buffer().blockFirst(Duration.ofSeconds(5));
+		
+		//Handle clleaning out RoleTickets while we're here
+		DiscordHandler.clearTickets();
 	}
 	
 	
@@ -79,7 +82,8 @@ public class AutoPruning {
 	{
 		System.out.println("Setting Up Timer");
 		TimerTask task = new TimerTask() {
-	        public void run() {
+	        @Override
+			public void run() {
 	        	doAutoPrune(pn);
 	        	createTimer(pn);
 	        }

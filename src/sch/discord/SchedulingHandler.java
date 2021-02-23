@@ -121,16 +121,14 @@ public class SchedulingHandler {
 		saveSchedulingReminderList();
 
 	}
-	
-	public static void removeReminder(Snowflake UserID, TimeIncrement ti)
-	{
+
+	public static void removeReminder(Snowflake UserID, TimeIncrement ti) {
 		peopleToRemind.get(UserID).remove(ti);
-		if (peopleToRemind.get(UserID).size()==0)
-		{
+		if (peopleToRemind.get(UserID).size() == 0) {
 			peopleToRemind.remove(UserID);
 		}
 		saveSchedulingReminderList();
-		removeTimersByTimeIncrement(UserID,ti);
+		removeTimersByTimeIncrement(UserID, ti);
 	}
 
 	static void createTimers(Snowflake UserID, SchedulePost sp) {
@@ -227,7 +225,7 @@ public class SchedulingHandler {
 			}
 		});
 		refreshSchedulingPostList();
-	setUpTimers();
+		setUpTimers();
 	}
 
 	public static String interpritPostDate(SchedulePost post, String timezone) {
@@ -236,25 +234,25 @@ public class SchedulingHandler {
 		c.setTime(date);
 		c.setTimeZone(TimeZone.getTimeZone(timezone));
 		StringBuilder sb = new StringBuilder();
-		sb.append(daysOfWeek[c.get(GregorianCalendar.DAY_OF_WEEK)]);
+		sb.append(daysOfWeek[c.get(Calendar.DAY_OF_WEEK)]);
 		sb.append(" ");
-		sb.append(monthsOfYear[c.get(GregorianCalendar.MONTH)]);
+		sb.append(monthsOfYear[c.get(Calendar.MONTH)]);
 		sb.append(" ");
-		sb.append(c.get(GregorianCalendar.DAY_OF_MONTH));
-		if (c.get(GregorianCalendar.YEAR) != +Calendar.getInstance().get(GregorianCalendar.YEAR)) {
+		sb.append(c.get(Calendar.DAY_OF_MONTH));
+		if (c.get(Calendar.YEAR) != +Calendar.getInstance().get(Calendar.YEAR)) {
 			sb.append(" ");
-			sb.append(c.get(GregorianCalendar.YEAR));
+			sb.append(c.get(Calendar.YEAR));
 		}
 		if (!post.isHideTime()) {
 			sb.append(", ");
-			if (c.get(GregorianCalendar.HOUR) == 0) {
+			if (c.get(Calendar.HOUR) == 0) {
 				sb.append(12);
 			} else
-				sb.append(c.get(GregorianCalendar.HOUR));
+				sb.append(c.get(Calendar.HOUR));
 			sb.append(":");
 			sb.append(new SimpleDateFormat("mm").format(date));
 			sb.append(" ");
-			sb.append(AM_PM[c.get(GregorianCalendar.AM_PM)]);
+			sb.append(AM_PM[c.get(Calendar.AM_PM)]);
 		}
 		return sb.toString();
 	}
@@ -363,13 +361,18 @@ public class SchedulingHandler {
 				}
 			}
 			if (!hasDate && (line.length() < 500)) {
+				System.out.println(line);
 				Parser parser = new Parser();
-				List<DateGroup> groups = parser.parse(line);
-				if (!groups.isEmpty()) {
-					post = checkDateGroups(post, groups);
-					if (post.isValid()) {
-						hasDate = true;
+				try {
+					List<DateGroup> groups = parser.parse(line);
+					if (!groups.isEmpty()) {
+						post = checkDateGroups(post, groups);
+						if (post.isValid()) {								
+							hasDate = true;
+						}
 					}
+				} catch (NullPointerException e) {
+					System.out.println("Fucked up!");
 				}
 			}
 		}
@@ -389,7 +392,7 @@ public class SchedulingHandler {
 	static void removeTimersByPost(Snowflake postId) {
 		timers.removeIf(t -> t.checkPostAndCancel(postId));
 	}
-	
+
 	static void removeTimersByTimeIncrement(Snowflake authorID, TimeIncrement ti) {
 		timers.removeIf(t -> t.checkPostAuthorIncrementAndCancel(authorID, ti));
 	}
